@@ -1,0 +1,10 @@
+# Flask ~= 2.3.2
+BeautifulSoup4 == 4.12.2
+js2py
+Pyexecjs ~= 1.5.1
+PyMySQL == 1.0.3
+# requests ~= 2.29.0
+# flask-apscheduler ~=1.12.4
+# you-get
+# minio~=7.1.14
+# urllib3~=1.25.11

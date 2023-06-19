@@ -3,23 +3,18 @@ import re
 
 import execjs
 import scrapy
+from redis import Redis
 from scrapy.http import HtmlResponse
 
 from ..items import MyspiderItem, DownloadM3u8Ts, MyItem
 
-
-# from scrapy import Selector
+red = Redis(host="120.25.161.159", port=6380, password="123456")
 
 
 class PronhubSpider(scrapy.Spider):
     name = "pronhub"
     base_url = ["https://jp.pornhub.com/"]
     allowed_domains = ["jp.pronhub.com"]
-    # proxy = {"proxy": "47.242.87.108:9008"}
-
-    # start_urls = ["https://jp.pornhub.com/video?page=1"]
-
-    # start_urls = ["https://www.zyte.com/blog/"]
 
     def start_requests(self):
         # start_requests_url_list = []
@@ -28,7 +23,7 @@ class PronhubSpider(scrapy.Spider):
                 start_requests_url = i + "video?page=" + str(x)
                 yield scrapy.Request(start_requests_url)
 
-    def parse(self, response):
+    def parse(self, response, **kwargs):
         sel = response.css('.pcVideoListItem.js-pop.videoblock.videoBox ')
         # sel = response.css('.wrap ')
         video_temp = {}
@@ -39,7 +34,6 @@ class PronhubSpider(scrapy.Spider):
 
             # 视频id
             sel_video_id = x.css('li::attr(data-video-id)').get()
-            print("sel_video_id============>" + sel_video_id)
             video_temp["sel_video_id"] = sel_video_id
             Movie_item["video_id"] = sel_video_id
 
@@ -48,6 +42,9 @@ class PronhubSpider(scrapy.Spider):
             sel_id_href = response.urljoin(sel_href)
             video_temp['sel_href'] = sel_id_href
             Movie_item['video_id_href'] = sel_id_href
+
+            # 存入redis 数据库
+            result = red.sadd("pronHub:start:requests:url", sel_id_href)
             # Movie_item['video_href'] = sel_href
             # 完整视频链接
 
@@ -66,7 +63,10 @@ class PronhubSpider(scrapy.Spider):
             Movie_item['video_var'] = sel_var
             # print(video_temp)
             # dont_filter = True  是表示不进行域名过滤
-            yield scrapy.Request(sel_id_href, callback=self.video_page, dont_filter=True)
+            if result:
+                yield scrapy.Request(sel_id_href, callback=self.video_page, dont_filter=True)
+            else:
+                print("已经重复插入了数据"+str(sel_id_href))
             # yield scrapy.Request(sel_id_href, callback=self.video_page, dont_filter=True)
 
     def video_page(self, response: HtmlResponse):
@@ -96,7 +96,7 @@ class PronhubSpider(scrapy.Spider):
         response_meta = scrapy.Request(m3u8_Ts_url_index, callback=self.download_m3u8, dont_filter=True)
         # response_meta = scrapy.Request(m3u8_Ts_url_index, dont_filter=True)
         response_meta.meta['downloadM3u8Ts'] = downloadM3u8Ts
-        response_meta.meta = self.proxy
+        # response_meta.meta = self.proxy
         yield response_meta
 
     def download_m3u8(self, response):
@@ -121,4 +121,3 @@ class PronhubSpider(scrapy.Spider):
             #     myItem = MyItem()
             myItem['file_urls'] = m3u8_url_ts_list_set[x]
             yield myItem
-

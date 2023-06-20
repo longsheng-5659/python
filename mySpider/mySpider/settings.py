@@ -74,7 +74,8 @@ DOWNLOADER_MIDDLEWARES = {
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
     "mySpider.pipelines.MyspiderPipeline": 300,
-    "mySpider.pipelines.VideoDownloadM3u8TsFilePiPline": 1,
+    # "mySpider.pipelines.VideoDownloadM3u8TsFilePiPline": 1,
+    "mySpider.pipelines.PronHubMysqlPipeline": 2,
     # "scrapy.pipelines.files.FilesPipeline": 1
 }
 

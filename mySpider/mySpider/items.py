@@ -13,14 +13,34 @@ class MyspiderItem(scrapy.Item):
 
     # 标题
     video_title = scrapy.Field()
+    # 视频描述
+    video_description = scrapy.Field()
     # 视频id
-    video_id = scrapy.Field()
+    video_vid = scrapy.Field()
+    # 作者id
+    video_uid = scrapy.Field()
     # 图片
     video_img = scrapy.Field()
     # 时长
     video_var = scrapy.Field()
     # 视频链接
-    video_id_href = scrapy.Field()
+    video_href = scrapy.Field()
+    # 视频链接
+    video_source = scrapy.Field()
+    # 分类
+    video_category = scrapy.Field()
+    # 标签
+    video_tag = scrapy.Field()
+    # 观看人数
+    video_visitor = scrapy.Field()
+    # 创建时间
+    video_create_time = scrapy.Field()
+    # 更新时间
+    video_update_time = scrapy.Field()
+    # 版本
+    video_version = scrapy.Field()
+    # 是否下载
+    video_deleted = scrapy.Field()
 
 
 class DownloadM3u8Ts(scrapy.Item):
@@ -33,4 +53,3 @@ class MyItem(scrapy.Item):
     # 其他字段
     file_urls = scrapy.Field()
     files = scrapy.Field()
-

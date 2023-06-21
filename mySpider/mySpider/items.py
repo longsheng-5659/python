@@ -53,3 +53,6 @@ class MyItem(scrapy.Item):
     # 其他字段
     file_urls = scrapy.Field()
     files = scrapy.Field()
+    file_name = scrapy.Field()
+    file_path = scrapy.Field()
+    video_file_len = scrapy.Field()

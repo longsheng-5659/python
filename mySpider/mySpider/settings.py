@@ -13,7 +13,8 @@ SPIDER_MODULES = ["mySpider.spiders"]
 NEWSPIDER_MODULE = "mySpider.spiders"
 
 # 文件下载地址
-FILES_STORE = "/Volumes/videoHD"
+# FILES_STORE = "/Volumes/videoHD"
+FILES_STORE = "/"
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 # USER_AGENT = "mySpider (+http://www.yourdomain.com)"
@@ -35,7 +36,7 @@ LOG_LEVEL = 'INFO'
 DOWNLOAD_DELAY = 3
 # The download delay setting will honor only one of:
 # 默认并发数量
-CONCURRENT_REQUESTS_PER_DOMAIN = 50
+CONCURRENT_REQUESTS_PER_DOMAIN = 300
 # CONCURRENT_REQUESTS_PER_IP = 16
 
 # Disable cookies (enabled by default)
@@ -74,8 +75,8 @@ DOWNLOADER_MIDDLEWARES = {
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
     "mySpider.pipelines.MyspiderPipeline": 300,
-    # "mySpider.pipelines.VideoDownloadM3u8TsFilePiPline": 1,
-    "mySpider.pipelines.PronHubMysqlPipeline": 2,
+    "mySpider.pipelines.VideoDownloadM3u8TsFilePiPline": 1,
+    # "mySpider.pipelines.PronHubMysqlPipeline": 2,
     # "scrapy.pipelines.files.FilesPipeline": 1
 }
 
@@ -104,3 +105,20 @@ ITEM_PIPELINES = {
 REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"
+
+# con = pymysql.Connect(
+#     host="120.25.161.159",
+#     port=3306,
+#     user="dev",
+#     password="dev",
+#     database="videohub",
+#     charset="utf8",
+#     autocommit=True,
+# )
+# 数据库链接信息
+# Mysql数据库的配置信息
+MYSQL_HOST = '120.25.161.159'  # 主机IP
+MYSQL_PORT = 3306  # 数据库端口
+MYSQL_DBNAME = 'videohub'  # 数据库名字
+MYSQL_USER = 'dev'  # 数据库账号
+MYSQL_PASSWD = 'dev'  # 数据库密码

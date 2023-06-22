@@ -52,7 +52,11 @@ class DownloadM3u8Ts(scrapy.Item):
 class MyItem(scrapy.Item):
     # 其他字段
     file_urls = scrapy.Field()
+    # 文件下载固定字段
     files = scrapy.Field()
+    # 文件路径名称
     file_name = scrapy.Field()
+    # 文件夹地址
     file_path = scrapy.Field()
+    # 文件需要下载的个数
     video_file_len = scrapy.Field()

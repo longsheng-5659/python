@@ -75,18 +75,18 @@ DOWNLOADER_MIDDLEWARES = {
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
     # "mySpider.pipelines.MyspiderPipeline": 300,
-    "mySpider.pipelines.VideoDownloadM3u8TsFilePiPline": 300,
+    "mySpider.pipelines.VideoDownloadM3u8TsFilePiPline": 1,
     # "mySpider.pipelines.PronHubMysqlPipeline": 2,
     # "scrapy.pipelines.files.FilesPipeline": 1
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
-AUTOTHROTTLE_ENABLED = True
+# AUTOTHROTTLE_ENABLED = True
 # The initial download delay
 # AUTOTHROTTLE_START_DELAY = 5
 # The maximum download delay to be set in case of high latencies
-AUTOTHROTTLE_MAX_DELAY = 5
+# AUTOTHROTTLE_MAX_DELAY = 5
 # The average number of requests Scrapy should be sending in parallel to
 # each remote server
 # AUTOTHROTTLE_TARGET_CONCURRENCY = 1.0
@@ -124,4 +124,4 @@ MYSQL_USER = 'dev'  # 数据库账号
 MYSQL_PASSWD = 'dev'  # 数据库密码
 
 # 增加线程池大小
-REACTOR_THREADPOOL_MAXSIZE = 100
+# REACTOR_THREADPOOL_MAXSIZE = 100

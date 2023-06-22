@@ -22,13 +22,16 @@ class PronhubSpider(scrapy.Spider):
     # allowed_domains = ["jp.pronhub.com"]
 
     def start_requests(self):
+
         # start_requests_url_list = []
         for i in self.base_url:
-            for x in range(1, 100):
+            for x in range(1, 5):
                 start_requests_url = i + "video?page=" + str(x)
+                # 开始的url 并生产迭代器，其中的数据给到parse 函数
                 yield scrapy.Request(start_requests_url)
 
     def parse(self, response, **kwargs):
+        # 拿到response数据进行请求
         sel = response.css('.pcVideoListItem.js-pop.videoblock.videoBox ')
         # sel = response.css('.wrap ')
         for x in sel:
@@ -74,10 +77,12 @@ class PronhubSpider(scrapy.Spider):
             Movie_item['video_var'] = sel_var
             # print(Movie_item)
             # yield Movie_item
+
+            # callback 函数回调video_page函数
             yield scrapy.Request(sel_href, callback=self.video_page, dont_filter=True)
 
     def video_page(self, response: HtmlResponse):
-
+        # 拿到response数据进行解析
         js = response.css('div.video-wrapper').css('#player').css('script').get()
         prepare_js = js.split('<script type="text/javascript">')[1].split('var nextVideoPlaylistObject')[0]
         # 编译js片段
@@ -100,8 +105,11 @@ class PronhubSpider(scrapy.Spider):
 
         m3u8_Ts_url_index = media_url.replace("master.m3u8", 'index-v1-a1.m3u8')
         downloadM3u8Ts['m3u8_Ts_url_index'] = m3u8_Ts_url_index
+
+        # 回调donload_m3u8函数
         response_meta = scrapy.Request(m3u8_Ts_url_index, callback=self.download_m3u8, dont_filter=True)
         response_meta.meta['downloadM3u8Ts'] = downloadM3u8Ts
+        # meta 函数是将数据进行函数间的传递，
         yield response_meta
 
     def download_m3u8(self, response):
@@ -126,6 +134,7 @@ class PronhubSpider(scrapy.Spider):
             #     myItem = MyItem()
             myItem["file_urls"] = m3u8_url_ts_list_set[x]
             myItem["video_file_len"] = len(m3u8_url_ts_list_set)
+            # 视频id作为文件夹
             file_path = u'/Volumes/videoHD/{0}'.format(m3u8_url_ts_list_set[x].split('/')[-3])
             file_path_name = file_path + '/' + m3u8_url_ts_list_set[x].split('/')[-1].split('?')[0]
             myItem["file_name"] = file_path_name
@@ -133,10 +142,11 @@ class PronhubSpider(scrapy.Spider):
             if not os.path.exists(file_path):
                 print(u"文件夹{0}不存在开始创建".format(file_path))
                 os.makedirs(file_path)
-            if len(os.listdir(file_path)) != len(m3u8_url_ts_list_set):
-                if not os.path.exists(file_path_name):
-                    yield myItem
-                else:
-                    print(file_path_name + "已经下载")
+            # if len(os.listdir(file_path)) != len(m3u8_url_ts_list_set):
+            if not os.path.exists(file_path_name):
+                # 如果文件不存在则返回迭代器给文件下载器下载
+                yield myItem
             else:
-                print(file_path + "文件已经全部下载")
+                print(file_path_name + "已经下载")
+            # else:
+            #     print(file_path + "文件已经全部下载")

@@ -80,8 +80,10 @@ class MyspiderPipeline:
 
 class VideoDownloadM3u8TsFilePiPline(FilesPipeline):
     def get_media_requests(self, item, info):
+        # 重写文件下载,将迭代器生成的数据item拿到，并进行下载文件
         yield scrapy.Request(url=item["file_urls"])
 
     def file_path(self, request, response=None, info=None, *, item=None):
+        # 重写文件名称
         return str(item['file_name'])
 

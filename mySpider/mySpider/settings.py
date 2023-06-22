@@ -33,17 +33,17 @@ LOG_LEVEL = 'INFO'
 # See also autothrottle settings and docs
 
 # 设置延迟
-DOWNLOAD_DELAY = 3
+DOWNLOAD_DELAY = 1
 # The download delay setting will honor only one of:
 # 默认并发数量
-CONCURRENT_REQUESTS_PER_DOMAIN = 300
+CONCURRENT_REQUESTS_PER_DOMAIN = 1000
 # CONCURRENT_REQUESTS_PER_IP = 16
 
 # Disable cookies (enabled by default)
 COOKIES_ENABLED = False
 
 # Disable Telnet Console (enabled by default)
-# TELNETCONSOLE_ENABLED = False
+TELNETCONSOLE_ENABLED = False
 
 # Override the default request headers:
 DEFAULT_REQUEST_HEADERS = {
@@ -74,19 +74,19 @@ DOWNLOADER_MIDDLEWARES = {
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    "mySpider.pipelines.MyspiderPipeline": 300,
-    "mySpider.pipelines.VideoDownloadM3u8TsFilePiPline": 1,
+    # "mySpider.pipelines.MyspiderPipeline": 300,
+    "mySpider.pipelines.VideoDownloadM3u8TsFilePiPline": 300,
     # "mySpider.pipelines.PronHubMysqlPipeline": 2,
     # "scrapy.pipelines.files.FilesPipeline": 1
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
-# AUTOTHROTTLE_ENABLED = True
+AUTOTHROTTLE_ENABLED = True
 # The initial download delay
 # AUTOTHROTTLE_START_DELAY = 5
 # The maximum download delay to be set in case of high latencies
-# AUTOTHROTTLE_MAX_DELAY = 60
+AUTOTHROTTLE_MAX_DELAY = 5
 # The average number of requests Scrapy should be sending in parallel to
 # each remote server
 # AUTOTHROTTLE_TARGET_CONCURRENCY = 1.0
@@ -122,3 +122,6 @@ MYSQL_PORT = 3306  # 数据库端口
 MYSQL_DBNAME = 'videohub'  # 数据库名字
 MYSQL_USER = 'dev'  # 数据库账号
 MYSQL_PASSWD = 'dev'  # 数据库密码
+
+# 增加线程池大小
+REACTOR_THREADPOOL_MAXSIZE = 100

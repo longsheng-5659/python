@@ -53,6 +53,7 @@ DEFAULT_REQUEST_HEADERS = {
                   "Chrome/113.0.0.0 Safari/537.36"
 }
 
+
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 # SPIDER_MIDDLEWARES = {
@@ -75,8 +76,8 @@ DOWNLOADER_MIDDLEWARES = {
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
     # "mySpider.pipelines.MyspiderPipeline": 300,
-    "mySpider.pipelines.VideoDownloadM3u8TsFilePiPline": 1,
-    # "mySpider.pipelines.PronHubMysqlPipeline": 2,
+    # "mySpider.pipelines.VideoDownloadM3u8TsFilePiPline": 1,
+    "mySpider.pipelines.PronHubMysqlPipeline": 2,
     # "scrapy.pipelines.files.FilesPipeline": 1
 }
 

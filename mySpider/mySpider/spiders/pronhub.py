@@ -54,11 +54,11 @@ class PronhubSpider(scrapy.Spider):
             # 标签
             Movie_item['video_tag'] = "标签"
             # 作者
-            Movie_item['video_visitor'] = random.randint(int(time.time()*10000), int(time.time()*100000))
+            Movie_item['video_visitor'] = random.randint(int(time.time() * 10000), int(time.time() * 100000))
             # 创建时间
-            Movie_item['video_create_time'] = int(time.time()*10000)
+            Movie_item['video_create_time'] = int(time.time() * 10000)
             # 更新时间
-            Movie_item['video_update_time'] = int(time.time()*10000)
+            Movie_item['video_update_time'] = int(time.time() * 10000)
             # 版本号
             Movie_item['video_version'] = 1
             # 是否删除
@@ -89,7 +89,7 @@ class PronhubSpider(scrapy.Spider):
         js_compiled = execjs.compile(prepare_js)
         videoQuality = ["1080P_4000K", "720P_4000K", "480P_2000K", "240P_1000K"]
         # 找到画质最高的视频链接
-        media_url = ''
+        # media_url = ''
         downloadM3u8Ts = DownloadM3u8Ts()
         for x in range(len(videoQuality)):
             for i in range(0, 4):
@@ -103,7 +103,7 @@ class PronhubSpider(scrapy.Spider):
                 continue
             break
 
-        m3u8_Ts_url_index = media_url.replace("master.m3u8", 'index-v1-a1.m3u8')
+        m3u8_Ts_url_index = downloadM3u8Ts['m3u8_Ts_url_master'].replace("master.m3u8", 'index-v1-a1.m3u8')
         downloadM3u8Ts['m3u8_Ts_url_index'] = m3u8_Ts_url_index
 
         # 回调donload_m3u8函数

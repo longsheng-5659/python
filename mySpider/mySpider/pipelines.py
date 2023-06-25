@@ -11,19 +11,12 @@ import pymysql
 import scrapy
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
+from redis.client import Redis
 from scrapy.pipelines.files import FilesPipeline
 from twisted.enterprise import adbapi
 
+from .items import MyItem, MyspiderItem
 
-# con = pymysql.Connect(
-#     host="120.25.161.159",
-#     port=3306,
-#     user="dev",
-#     password="dev",
-#     database="videohub",
-#     charset="utf8",
-#     autocommit=True,
-# )
 
 
 class PronHubMysqlPipeline(object):
@@ -32,6 +25,8 @@ class PronHubMysqlPipeline(object):
     #     """
     def __init__(self, dbpool):
         self.dbpool = dbpool
+
+        self.red = Redis(host="120.25.161.159", port=6380, password="123456")
 
     @classmethod
     def from_settings(cls, settings):  # 函数名固定，会被scrapy调用，直接可用settings的值
@@ -52,10 +47,17 @@ class PronHubMysqlPipeline(object):
         # 连接数据池ConnectionPool，使用pymysql连接
         dbpool = adbapi.ConnectionPool('pymysql', **adbparams)
         # 返回实例化参数
+
         return cls(dbpool)
 
     def process_item(self, item, spider):
-        query = self.dbpool.runInteraction(self.insert_sql, item)
+        # 判断是否是MyspiderItem模型
+        if isinstance(item, MyspiderItem):
+            query = self.dbpool.runInteraction(self.insert_sql, item)
+            # 判断是否是MyItem模型
+        if isinstance(item, MyItem):
+            self.red.sadd(item["file_name"], item['file_urls'])
+            self.red.expire(item["file_name"], 60*10)
 
     def insert_sql(self, cursor, item):
         sql = "insert into videohub.video(vid,uid,title,poster,description,sources,category,tag,visitor,create_time," \
@@ -86,4 +88,3 @@ class VideoDownloadM3u8TsFilePiPline(FilesPipeline):
     def file_path(self, request, response=None, info=None, *, item=None):
         # 重写文件名称
         return str(item['file_name'])
-

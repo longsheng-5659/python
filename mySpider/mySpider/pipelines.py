@@ -18,7 +18,6 @@ from twisted.enterprise import adbapi
 from .items import MyItem, MyspiderItem
 
 
-
 class PronHubMysqlPipeline(object):
     #     """
     #     异步操作，连接池
@@ -56,8 +55,17 @@ class PronHubMysqlPipeline(object):
             query = self.dbpool.runInteraction(self.insert_sql, item)
             # 判断是否是MyItem模型
         if isinstance(item, MyItem):
-            self.red.sadd(item["file_name"], item['file_urls'])
-            self.red.expire(item["file_name"], 60*10)
+            # self.red.sadd(item["file_name"], item['file_urls'])
+            # self.red.expire(item["file_name"], 60 * 10)
+            query = self.dbpool.runInteraction(self.insert_sql_for_MyItem, item)
+
+    def insert_sql_for_MyItem(self, cursor, item):
+        sql = "INSERT INTO videohub.items(`delete`, name, `path`, len)VALUES(0, \"%s\", \"%s\", \"%s\")" \
+              % (item['file_name'], item['file_path'], item['video_file_len'])
+        try:
+            cursor.execute(sql)
+        except:
+            print("失败")
 
     def insert_sql(self, cursor, item):
         sql = "insert into videohub.video(vid,uid,title,poster,description,sources,category,tag,visitor,create_time," \

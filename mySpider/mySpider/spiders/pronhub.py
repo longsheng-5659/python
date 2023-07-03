@@ -139,14 +139,16 @@ class PronhubSpider(scrapy.Spider):
             file_path_name = file_path + '/' + m3u8_url_ts_list_set[x].split('/')[-1].split('?')[0]
             myItem["file_name"] = file_path_name
             myItem["file_path"] = file_path
-            if not os.path.exists(file_path):
-                print(u"文件夹{0}不存在开始创建".format(file_path))
-                os.makedirs(file_path)
-            # if len(os.listdir(file_path)) != len(m3u8_url_ts_list_set):
-            if not os.path.exists(file_path_name):
-                # 如果文件不存在则返回迭代器给文件下载器下载
-                yield myItem
-            else:
-                print(file_path_name + "已经下载")
+
+            yield myItem
+            # if not os.path.exists(file_path):
+            #     print(u"文件夹{0}不存在开始创建".format(file_path))
+            #     os.makedirs(file_path)
+            # # if len(os.listdir(file_path)) != len(m3u8_url_ts_list_set):
+            # if not os.path.exists(file_path_name):
+            #     # 如果文件不存在则返回迭代器给文件下载器下载
+            #     yield myItem
+            # else:
+            #     print(file_path_name + "已经下载")
             # else:
             #     print(file_path + "文件已经全部下载")

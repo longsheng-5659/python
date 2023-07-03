@@ -71,7 +71,9 @@ class MyspiderDownloaderMiddleware:
     def process_request(self, request, spider):
         # Called for each request that goes through the downloader
         # middleware.
-        # request.meta['proxy'] = 'http://47.242.87.108:9008'
+        # proxy = "http://47.242.87.108:9007"
+        # request.meta["proxy"] = proxy
+        # print(f"proxy----->>{proxy}")
         # Must either:
         # - return None: continue processing this request
         # - or return a Response object
@@ -101,3 +103,10 @@ class MyspiderDownloaderMiddleware:
 
     def spider_opened(self, spider):
         spider.logger.info("Spider opened: %s" % spider.name)
+
+
+class TestProxyMiddleware(object):
+    def process_request(self, request, spider):
+        proxy = "http://47.94.89.87:3128"
+        request.meta["proxy"] = proxy
+        print(f"TestProxyMiddleware --> {proxy}")

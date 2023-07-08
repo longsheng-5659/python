@@ -6,3 +6,6 @@ cd ../pythonProject/mySpider/mySpider
 
 # main.py 
 主程序入口
+
+# 下载依赖
+pip install -r requirements.txt

@@ -57,10 +57,10 @@ class PronHubMysqlPipeline(object):
         if isinstance(item, MyItem):
             # self.red.sadd(item["file_name"], item['file_urls'])
             # self.red.expire(item["file_name"], 60 * 10)
+            # 文件数量个数存储到数据库中，可能会有部分数据下载失败，则需要二次判断文件夹内文件个数的完整性，否则需要二次下载
             query = self.dbpool.runInteraction(self.insert_sql_for_MyItem, item)
             # 下载文件地址存储到redis 中，下载文件的地址会有过期时间限制，下载的时候判断文件是否重复即可，不用判断redis中的数据是否重复
             self.red.set(item['file_name'], item['file_urls'], 1000)
-
 
     def insert_sql_for_MyItem(self, cursor, item):
         sql = "INSERT INTO videohub.items(`vid`, name, `path`, len)VALUES(\"%s\", \"%s\", \"%s\", \"%s\")" \
@@ -84,7 +84,6 @@ class PronHubMysqlPipeline(object):
             cursor.execute(sql)
         except:
             print("添加重复------>" + item['video_vid'] + "------>" + item['video_href'])
-
 
 # class MyspiderPipeline:
 #     def process_item(self, item, spider):

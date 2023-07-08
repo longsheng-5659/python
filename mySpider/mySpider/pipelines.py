@@ -85,16 +85,16 @@ class PronHubMysqlPipeline(object):
             print("添加重复------>" + item['video_vid'] + "------>" + item['video_href'])
 
 
-class MyspiderPipeline:
-    def process_item(self, item, spider):
-        return item
-
-
-class VideoDownloadM3u8TsFilePiPline(FilesPipeline):
-    def get_media_requests(self, item, info):
-        # 重写文件下载,将迭代器生成的数据item拿到，并进行下载文件
-        yield scrapy.Request(url=item["file_urls"])
-
-    def file_path(self, request, response=None, info=None, *, item=None):
-        # 重写文件名称
-        return str(item['file_name'])
+# class MyspiderPipeline:
+#     def process_item(self, item, spider):
+#         return item
+#
+#   不用原生的下载工具了，太慢了
+# class VideoDownloadM3u8TsFilePiPline(FilesPipeline):
+#     def get_media_requests(self, item, info):
+#         # 重写文件下载,将迭代器生成的数据item拿到，并进行下载文件
+#         yield scrapy.Request(url=item["file_urls"])
+#
+#     def file_path(self, request, response=None, info=None, *, item=None):
+#         # 重写文件名称
+#         return str(item['file_name'])

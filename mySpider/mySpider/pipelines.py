@@ -58,10 +58,12 @@ class PronHubMysqlPipeline(object):
             # self.red.sadd(item["file_name"], item['file_urls'])
             # self.red.expire(item["file_name"], 60 * 10)
             query = self.dbpool.runInteraction(self.insert_sql_for_MyItem, item)
-
+            x = self.red.set(item['file_name'], item['file_urls'], 1000)
+            if x == 0:
+                print("file_name重复添加" + item['file_name'])
     def insert_sql_for_MyItem(self, cursor, item):
-        sql = "INSERT INTO videohub.items(`delete`, name, `path`, len)VALUES(0, \"%s\", \"%s\", \"%s\")" \
-              % (item['file_name'], item['file_path'], item['video_file_len'])
+        sql = "INSERT INTO videohub.items(`vid`, name, `path`, len)VALUES(\"%s\", \"%s\", \"%s\", \"%s\")" \
+              % (item['video_vid'], item['file_name'], item['file_path'], item['video_file_len'])
         try:
             cursor.execute(sql)
         except:

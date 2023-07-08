@@ -14,6 +14,7 @@ NEWSPIDER_MODULE = "mySpider.spiders"
 
 # 文件下载地址
 # FILES_STORE = "/Volumes/videoHD"
+# FILES_STORE = "/Volumes/videoHD"
 FILES_STORE = "/"
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
@@ -21,6 +22,7 @@ FILES_STORE = "/"
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
+# ROBOTSTXT_OBEY = True
 
 # 日志等级
 LOG_LEVEL = 'INFO'
@@ -33,14 +35,15 @@ LOG_LEVEL = 'INFO'
 # See also autothrottle settings and docs
 
 # 设置延迟
-DOWNLOAD_DELAY = 1
+DOWNLOAD_DELAY = 5
 # The download delay setting will honor only one of:
 # 默认并发数量
-CONCURRENT_REQUESTS_PER_DOMAIN = 1000
+CONCURRENT_REQUESTS_PER_DOMAIN = 300
 # CONCURRENT_REQUESTS_PER_IP = 16
 
 # Disable cookies (enabled by default)
 COOKIES_ENABLED = False
+# COOKIES_ENABLED = True
 
 # Disable Telnet Console (enabled by default)
 TELNETCONSOLE_ENABLED = False
@@ -50,9 +53,10 @@ DEFAULT_REQUEST_HEADERS = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
     "Accept-Language": "en",
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) "
-                  "Chrome/113.0.0.0 Safari/537.36"
-}
+                  "Chrome/113.0.0.0 Safari/537.36",
+    "Cookie": "accessAgeDisclaimerPH=1"
 
+}
 
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html

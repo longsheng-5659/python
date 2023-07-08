@@ -2,5 +2,5 @@ Scrapy==2.9.0
 BeautifulSoup4 == 4.12.2
 Js2Py==0.74
 Pyexecjs ~= 1.5.1
-PyMySQL == 1.0.3
-urllib3==1.25.11
+PyMySQL==1.1.0
+urllib3==2.0.3

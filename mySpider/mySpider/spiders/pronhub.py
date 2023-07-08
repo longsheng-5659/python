@@ -1,5 +1,4 @@
-import logging
-import os
+
 import random
 import re
 import time
@@ -17,21 +16,23 @@ class PronhubSpider(scrapy.Spider):
     name = "pronhub"
     base_url = ["https://jp.pornhub.com/"]
     # base_url = ["https://jp.pornhub.com/"]
-    allowed_domains = ["cn.pronhub.com"]
+    # allowed_domains = ["cn.pronhub.com"]
 
-    # allowed_domains = ["jp.pronhub.com"]
+    allowed_domains = ["jp.pronhub.com"]
 
     def start_requests(self):
 
         # start_requests_url_list = []
         for i in self.base_url:
-            for x in range(1, 5):
+            for x in range(1, 2):
                 start_requests_url = i + "video?page=" + str(x)
                 # 开始的url 并生产迭代器，其中的数据给到parse 函数
+                # print("开始的url地址" + start_requests_url)
                 yield scrapy.Request(start_requests_url)
 
     def parse(self, response, **kwargs):
         # 拿到response数据进行请求
+        # print("开始解析页面" + response.text)
         sel = response.css('.pcVideoListItem.js-pop.videoblock.videoBox ')
         # sel = response.css('.wrap ')
         for x in sel:
@@ -39,6 +40,7 @@ class PronhubSpider(scrapy.Spider):
             Movie_item = MyspiderItem()
             # 视频id
             sel_video_id = x.css('li::attr(data-video-id)').get()
+            # print("sel_video_id" + sel_video_id)
             Movie_item["video_vid"] = sel_video_id
             # 作者id随便取
             Movie_item["video_uid"] = 24531
@@ -79,6 +81,7 @@ class PronhubSpider(scrapy.Spider):
             # yield Movie_item
 
             # callback 函数回调video_page函数
+            # print("解析完成，开始回调" + sel_href)
             yield scrapy.Request(sel_href, callback=self.video_page, dont_filter=True)
 
     def video_page(self, response: HtmlResponse):
@@ -135,10 +138,12 @@ class PronhubSpider(scrapy.Spider):
             myItem["file_urls"] = m3u8_url_ts_list_set[x]
             myItem["video_file_len"] = len(m3u8_url_ts_list_set)
             # 视频id作为文件夹
-            file_path = u'/Volumes/videoHD/{0}'.format(m3u8_url_ts_list_set[x].split('/')[-3])
+            video_vid = m3u8_url_ts_list_set[x].split('/')[-3]
+            file_path = u'/Volumes/videoHD/{0}'.format(video_vid)
             file_path_name = file_path + '/' + m3u8_url_ts_list_set[x].split('/')[-1].split('?')[0]
             myItem["file_name"] = file_path_name
             myItem["file_path"] = file_path
+            myItem["video_vid"] = video_vid
 
             yield myItem
             # if not os.path.exists(file_path):

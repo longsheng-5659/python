@@ -60,3 +60,5 @@ class MyItem(scrapy.Item):
     file_path = scrapy.Field()
     # 文件需要下载的个数
     video_file_len = scrapy.Field()
+    # 视频id
+    video_vid = scrapy.Field()

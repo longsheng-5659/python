@@ -58,9 +58,10 @@ class PronHubMysqlPipeline(object):
             # self.red.sadd(item["file_name"], item['file_urls'])
             # self.red.expire(item["file_name"], 60 * 10)
             query = self.dbpool.runInteraction(self.insert_sql_for_MyItem, item)
-            x = self.red.set(item['file_name'], item['file_urls'], 1000)
-            if x == 0:
-                print("file_name重复添加" + item['file_name'])
+            # 下载文件地址存储到redis 中，下载文件的地址会有过期时间限制，下载的时候判断文件是否重复即可，不用判断redis中的数据是否重复
+            self.red.set(item['file_name'], item['file_urls'], 1000)
+
+
     def insert_sql_for_MyItem(self, cursor, item):
         sql = "INSERT INTO videohub.items(`vid`, name, `path`, len)VALUES(\"%s\", \"%s\", \"%s\", \"%s\")" \
               % (item['video_vid'], item['file_name'], item['file_path'], item['video_file_len'])

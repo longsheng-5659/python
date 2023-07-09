@@ -8,6 +8,7 @@ import time
 from urllib.parse import urlparse
 
 import pymysql
+import redis
 import scrapy
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
@@ -25,7 +26,8 @@ class PronHubMysqlPipeline(object):
     def __init__(self, dbpool):
         self.dbpool = dbpool
 
-        self.red = Redis(host="120.25.161.159", port=6380, password="123456")
+        pool = redis.ConnectionPool(host="120.25.161.159", port=6380, password="123456")
+        self.red = redis.Redis(connection_pool=pool, decode_responses=True, max_connections=100)
 
     @classmethod
     def from_settings(cls, settings):  # 函数名固定，会被scrapy调用，直接可用settings的值
@@ -41,7 +43,8 @@ class PronHubMysqlPipeline(object):
             password=settings['MYSQL_PASSWD'],
             charset='utf8',
             cursorclass=pymysql.cursors.DictCursor,
-            use_unicode=True
+            use_unicode=True,
+            cp_max=50
         )
         # 连接数据池ConnectionPool，使用pymysql连接
         dbpool = adbapi.ConnectionPool('pymysql', **adbparams)
@@ -55,16 +58,29 @@ class PronHubMysqlPipeline(object):
             query = self.dbpool.runInteraction(self.insert_sql, item)
             # 判断是否是MyItem模型
         if isinstance(item, MyItem):
-            # self.red.sadd(item["file_name"], item['file_urls'])
-            # self.red.expire(item["file_name"], 60 * 10)
-            # 文件数量个数存储到数据库中，可能会有部分数据下载失败，则需要二次判断文件夹内文件个数的完整性，否则需要二次下载
-            query = self.dbpool.runInteraction(self.insert_sql_for_MyItem, item)
+            # 先去查询数据库中是否存在vid,避免大量写操作
+            self.dbpool.runInteraction(self.Select_sql_for_MyItem, item)
             # 下载文件地址存储到redis 中，下载文件的地址会有过期时间限制，下载的时候判断文件是否重复即可，不用判断redis中的数据是否重复
-            self.red.set(item['file_name'], item['file_urls'], 1000)
+            x = self.red.hset(item['video_vid'], item['file_name'], item['file_urls'])
+            if x != 0:
+                self.red.expire(item['video_vid'], 1000)
 
     def insert_sql_for_MyItem(self, cursor, item):
         sql = "INSERT INTO videohub.items(`vid`, name, `path`, len)VALUES(\"%s\", \"%s\", \"%s\", \"%s\")" \
               % (item['video_vid'], item['file_name'], item['file_path'], item['video_file_len'])
+        try:
+            cursor.execute(sql)
+            results = cursor.fetchall()
+            if not results:
+                print("查询结果为空")
+            else:
+                # 文件数量个数存储到数据库中，可能会有部分数据下载失败，则需要二次判断文件夹内文件个数的完整性，否则需要二次下载
+                self.dbpool.runInteraction(self.insert_sql_for_MyItem, item)
+        except:
+            print("失败")
+
+    def Select_sql_for_MyItem(self, cursor, item):
+        sql = "select id from videohub.items where vid = \"%s\" " % (item['video_vid'])
         try:
             cursor.execute(sql)
         except:

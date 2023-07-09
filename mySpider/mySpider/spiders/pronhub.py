@@ -24,7 +24,7 @@ class PronhubSpider(scrapy.Spider):
 
         # start_requests_url_list = []
         for i in self.base_url:
-            for x in range(1, 2):
+            for x in range(1, 100):
                 start_requests_url = i + "video?page=" + str(x)
                 # 开始的url 并生产迭代器，其中的数据给到parse 函数
                 # print("开始的url地址" + start_requests_url)

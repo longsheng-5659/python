@@ -26,7 +26,7 @@ class PronHubMysqlPipeline(object):
     def __init__(self, dbpool):
         self.dbpool = dbpool
 
-        pool = redis.ConnectionPool(host="120.25.161.159", port=6380, password="123456")
+        pool = redis.ConnectionPool(host="120.25.161.159", port=6380, password="123456", db=1)
         self.red = redis.Redis(connection_pool=pool, decode_responses=True, max_connections=100)
 
     @classmethod
@@ -65,24 +65,24 @@ class PronHubMysqlPipeline(object):
             if x != 0:
                 self.red.expire(item['video_vid'], 1000)
 
-    def insert_sql_for_MyItem(self, cursor, item):
-        sql = "INSERT INTO videohub.items(`vid`, name, `path`, len)VALUES(\"%s\", \"%s\", \"%s\", \"%s\")" \
-              % (item['video_vid'], item['file_name'], item['file_path'], item['video_file_len'])
+    def Select_sql_for_MyItem(self, cursor, item):
+        sql = "select id from videohub.items where vid = \"%s\" " % (item['video_vid'])
         try:
             cursor.execute(sql)
             results = cursor.fetchall()
             if not results:
-                print("查询结果为空")
-            else:
+                print("查询数据为空，" + item['video_vid'] + "开始插入")
                 # 文件数量个数存储到数据库中，可能会有部分数据下载失败，则需要二次判断文件夹内文件个数的完整性，否则需要二次下载
                 self.dbpool.runInteraction(self.insert_sql_for_MyItem, item)
         except:
             print("失败")
 
-    def Select_sql_for_MyItem(self, cursor, item):
-        sql = "select id from videohub.items where vid = \"%s\" " % (item['video_vid'])
+    def insert_sql_for_MyItem(self, cursor, item):
+        sql = "INSERT INTO videohub.items(`vid`, name, `path`, len)VALUES(\"%s\", \"%s\", \"%s\", \"%s\")" \
+              % (item['video_vid'], item['file_name'], item['file_path'], item['video_file_len'])
         try:
             cursor.execute(sql)
+            print("插入结束" + item['video_vid'])
         except:
             print("失败")
 

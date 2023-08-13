@@ -1,4 +1,4 @@
-
+import os
 import random
 import re
 import time
@@ -144,8 +144,8 @@ class PronhubSpider(scrapy.Spider):
             myItem["file_name"] = file_path_name
             myItem["file_path"] = file_path
             myItem["video_vid"] = video_vid
-
-            yield myItem
+            if not os.path.exists(file_path_name):
+                yield myItem
             # if not os.path.exists(file_path):
             #     print(u"文件夹{0}不存在开始创建".format(file_path))
             #     os.makedirs(file_path)

@@ -23,7 +23,8 @@ def gget():
         if ll != 0:
             try:  # 增加代码健壮性
                 a = red.lpop("file_urls")  # 维护的list 栈中弹出左侧的key
-                print(a)
+                # print(a)
+                # decode()  byte 转字符串方法
                 run(a.decode())
             except Exception as e:
                 print(e)
@@ -31,10 +32,11 @@ def gget():
 
 
 def ma():
-    for x in range(100):  # 创建100个线程 ，充当线程池作用
+    for x in range(400):  # 创建100个线程 ，充当线程池作用
         th = threading.Thread(target=gget)
         th.start()
     th.join()
+
 
 def run(file_url):
     video_vid = file_url.split('/')[-3]
@@ -43,16 +45,18 @@ def run(file_url):
     file_path_name = file_url.split('/')[-1].split('?')[0]
     try:
         if not os.path.exists('{}/{}'.format(file_path, file_path_name)):
-            if not os.path.exists('{}'.format(file_path,)):
+            if not os.path.exists('{}'.format(file_path, )):
                 os.makedirs(file_path)
-            r = requests.get(file_url)
+            r = requests.get(file_url, timeout=(5, 10))
             with open('{}/{}'.format(file_path, file_path_name), 'wb') as f:
                 f.write(r.content)
-        print("{}已下载".format(file_path))
+            print("{}/{}已下载".format(file_path, file_path_name))
+        else:
+            print("{}/{}已存在".format(file_path, file_path_name))
 
     except Exception as e:
         print(str(e))
-        print("出现异常，正在自动重新下载！")
+        # print("出现异常，正在自动重新下载！")
         # run(file_url)
 
 

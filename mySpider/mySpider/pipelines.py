@@ -54,11 +54,11 @@ class PronHubMysqlPipeline(object):
             self.dbpool.runInteraction(self.Select_sql_for_MyItem, item)
             # 下载文件地址存储到redis 中，下载文件的地址会有过期时间限制，下载的时候判断文件是否重复即可，不用判断redis中的数据是否重复
             # x = self.red.hset(item['video_vid'], item['file_name'], item['file_urls'])
-            y = self.red.sadd(item['video_vid'], item['file_urls'])
+            # y = self.red.sadd(item['video_vid'], item['file_urls'])
             # if x != 0:
             #     self.red.expire(item['video_vid'], 1000)
-            if y != 0:
-                self.red.expire(item['video_vid'], 1000)
+            # if y != 0:
+            #     self.red.expire(item['video_vid'], 1000)
 
             # 将数据存储到redis队列中
             self.red.lpush("file_urls", item['file_urls'])

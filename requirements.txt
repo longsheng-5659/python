@@ -65,3 +65,5 @@ items~=0.6.5
 PyMySQL~=1.0.3
 itemadapter~=0.8.0
 Twisted~=22.10.0
+requests~=2.29.0
+urllib3==2.0.4

@@ -17,6 +17,17 @@ NEWSPIDER_MODULE = "mySpider.spiders"
 # FILES_STORE = "/Volumes/videoHD"
 FILES_STORE = "/"
 
+
+# minio 文件存储地址
+AWS_ENDPOINT_URL = 'http://45.130.147.98:9000'
+# 文件存储策略
+IMAGES_STORE_S3_ACL = 'public-read'
+# 对于自托管，您可能觉得不需要使用SSL，也不需要验证SSL连接
+AWS_USE_SSL = False # or True (None by default)
+AWS_VERIFY = False # or True (None by default)
+
+
+
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 # USER_AGENT = "mySpider (+http://www.yourdomain.com)"
 
